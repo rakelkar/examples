@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: myvs
+  namespace: knative-serving
+spec:
+  hosts:
+  - httpbin.default
+  - httpbin.default.104.210.45.165.xip.io
+  - httpbin.104.210.45.165.xip.io
+  gateways:
+  - cluster-local-gateway
+  - knative-ingress-gateway
+  http:
+  - match:
+    - headers:
+        End-User:
+          exact: jason
+    rewrite:
+      authority: httpbin-predictor-default.default.104.210.45.165.xip.io
+    route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 100
+  - match:
+    - headers:
+        End-User:
+          exact: canary
+    rewrite:
+      authority: httpbin-predictor-default.default.104.210.45.165.xip.io
+    route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 100

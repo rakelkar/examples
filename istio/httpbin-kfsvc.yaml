@@ -1,0 +1,27 @@
+apiVersion: "serving.kubeflow.org/v1alpha2"
+kind: "KFService"
+metadata:
+  name: "httpbin"
+spec:
+  annotations:
+  default:
+    predictor:
+      minReplicas: 1
+      custom:
+        container:
+          image: docker.io/kennethreitz/httpbin
+          imagePullPolicy: IfNotPresent
+          name: httpbin
+          ports:
+          - containerPort: 80
+  canaryTrafficPercent: 50
+  canary:
+    predictor:
+      minReplicas: 1
+      custom:
+        container:
+          image: docker.io/kennethreitz/httpbin
+          imagePullPolicy: IfNotPresent
+          name: httpbin
+          ports:
+          - containerPort: 80
