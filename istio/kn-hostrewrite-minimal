@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin-vs
+spec:
+  hosts:
+  - httpbin.104.210.45.165.xip.io
+  gateways:
+  - knative-ingress-gateway.knative-serving
+  http:
+  - route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 50
+      headers:
+        request:
+          set:
+            Host: httpbin-predictor-canary.default.104.210.45.165.xip.io
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 50
+      headers:
+        request:
+          set:
+            Host: httpbin-predictor-default.default.104.210.45.165.xip.io
