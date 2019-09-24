@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mykfsvc
+spec:
+  hosts:
+  - mykfsvc.104.210.45.165.xip.io
+  gateways:
+  - knative-ingress-gateway.knative-serving
+  http:
+  - match:
+    - uri:
+      prefix: "/v1/models/mykfsvc:predict"
+    route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 90
+      headers:
+        request:
+          set:
+            Host: mykfsvc-predictor-default.default.104.210.45.165.xip.io
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 100
+      headers:
+        request:
+          set:
+            Host: mykfsvc-predictor-canary.default.104.210.45.165.xip.io
+  - match:
+    - uri:
+      prefix: "/v1/models/mykfsvc:explain"
+    route:
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 90
+      headers:
+        request:
+          set:
+            Host: mykfsvc-explainer-default.default.104.210.45.165.xip.io
+    - destination:
+        host: istio-ingressgateway.istio-system.svc.cluster.local
+        port:
+          number: 80
+      weight: 10
+      headers:
+        request:
+          set:
+            Host: mykfsvc-explainer-canary.default.104.210.45.165.xip.io
