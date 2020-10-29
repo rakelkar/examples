@@ -11,7 +11,7 @@ metadata:
 spec:
   virtualHost:
     domains:
-    - '*'
+    - 'foo.20.69.146.153.xip.io'
     routes:
     - matchers:
       - headers:
