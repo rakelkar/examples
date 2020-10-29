@@ -1,0 +1,55 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2020-10-29T04:25:43Z"
+  generation: 13
+  name: default
+  namespace: gloo-system
+  resourceVersion: "4875"
+  selfLink: /apis/gateway.solo.io/v1/namespaces/gloo-system/virtualservices/default
+  uid: 0f727913-2b9a-4fd9-a082-536d369db8ad
+spec:
+  virtualHost:
+    domains:
+    - '*'
+    routes:
+    - matchers:
+      - headers:
+        - name: pet
+          value: dog
+        prefix: /all-pets
+      options:
+        prefixRewrite: /api/pets/1
+      routeAction:
+        single:
+          upstream:
+            name: default-petstore-8080
+            namespace: gloo-system
+    - matchers:
+      - headers:
+        - name: pet
+          value: cat
+        prefix: /all-pets
+      options:
+        prefixRewrite: /api/pets/2
+      routeAction:
+        single:
+          upstream:
+            name: default-petstore-8080
+            namespace: gloo-system
+    - matchers:
+      - exact: /all-pets
+      options:
+        prefixRewrite: /api/pets
+      routeAction:
+        single:
+          upstream:
+            name: default-petstore-8080
+            namespace: gloo-system
+status:
+  reportedBy: gateway
+  state: 1
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: 1
